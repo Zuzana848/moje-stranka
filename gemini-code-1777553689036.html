@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edgerunners Identity Scanner</title>
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-yellow: #fcee0a;
+            --neon-red: #ff003c;
+            --neon-green: #39ff14;
+            --dark-bg: #0a0a0a;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)),
+                url('https://images.unsplash.com/photo-1614850523296-e8c1d07ed7a9?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .scanner-card {
+            width: 100%;
+            max-width: 700px;
+            background: rgba(15, 15, 15, 0.95);
+            border: 1px solid #333;
+            box-shadow: 0 0 30px rgba(0,0,0,1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Dekorativní linka nahoře */
+        .scanner-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--neon-yellow), var(--neon-red));
+        }
+
+        .header {
+            padding: 30px;
+            text-align: center;
+            border-bottom: 1px solid #222;
+        }
+
+        .header h1 {
+            color: var(--neon-yellow);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .content { padding: 30px; }
+
+        fieldset {
+            border: 1px solid #222;
+            padding: 20px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        legend {
+            color: var(--neon-blue);
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            padding: 0 10px;
+            letter-spacing: 2px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .input-group { display: flex; flex-direction: column; }
+
+        label {
+            font-size: 0.7rem;
+            color: #777;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        select {
+            background: #000;
+            border: 1px solid #444;
+            color: var(--neon-yellow);
+            padding: 10px;
+            font-family: inherit;
+            outline: none;
+            cursor: pointer;
+        }
+
+        select:focus { border-color: var(--neon-blue); }
+
+        /* Výsledek - Styl Edgerunners */
+        .result-area {
+            display: none;
+            margin-top: 20px;
+            border: 2px solid var(--neon-green);
+            background: rgba(57, 255, 20, 0.05);
+            padding: 25px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .result-name {
+            color: var(--neon-green);
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin: 10px 0;
+        }
+
+        .result-desc {
+            color: #bbb;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .warning-footer {
+            margin-top: 20px;
+            font-size: 0.7rem;
+            color: var(--neon-red);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="scanner-card">
+    <div class="header">
+        <h1>NEURAL PATTERN ANALYZER</h1>
+        <p style="font-size: 0.7rem; color: #555;">DATABASE: NIGHT CITY / EDGERUNNERS_FILES</p>
+    </div>
+
+    <div class="content">
+        <fieldset>
+            <legend>Political Landscape & Fixers</legend>
+            <div class="grid">
+                <div class="input-group">
+                    <label>Primary Fixer Contact</label>
+                    <select id="fixer" onchange="checkMatch()">
+                        <option value="">-- UNKNOWN --</option>
+                        <option value="faraday">Faraday (Militech Ties)</option>
+                        <option value="wakako">Wakako Okada (Tyger Claws)</option>
+                        <option value="rogue">Rogue (Afterlife)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Target Location</label>
+                    <select id="location" onchange="checkMatch()">
+                        <option value="">-- UNKNOWN --</option>
+                        <option value="arasaka">Arasaka Tower</option>
+                        <option value="santo">Santo Domingo (Slums)</option>
+                        <option value="badlands">The Badlands</option>
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Neural & Combat Profile</legend>
+            <div class="grid">
+                <div class="input-group">
+                    <label>Neural OS</label>
+                    <select id="os" onchange="checkMatch()">
+                        <option value="">-- NONE --</option>
+                        <option value="sandy">Sandevistan (Military Grade)</option>
+                        <option value="deck">Cyberdeck (Netrunner)</option>
+                        <option value="berserk">Berserk (Combat Stim)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Trauma Team Tier</label>
+                    <select id="trauma" onchange="checkMatch()">
+                        <option value="">-- NONE --</option>
+                        <option value="platinum">Platinum (Executive)</option>
+                        <option value="none">No Subscription (Edgerunner)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Primary Weapon</label>
+                    <select id="weapon" onchange="checkMatch()">
+                        <option value="">-- UNARMED --</option>
+                        <option value="shotgun">Carnage Shotgun</option>
+                        <option value="wire">Monowire</option>
+                        <option value="lmg">Heavy LMG</option>
+                        <option value="pistol">Lexington Pistol</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Combat Approach</label>
+                    <select id="style" onchange="checkMatch()">
+                        <option value="">-- NONE --</option>
+                        <option value="blitz">Blitzkrieg (Speed)</option>
+                        <option value="hacker">Deep Dive (Hacking)</option>
+                        <option value="tank">Brute Force (Tanking)</option>
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+
+        <div id="result" class="result-area">
+            <span style="color: white; font-size: 0.7rem; letter-spacing: 3px;">IDENTITY CONFIRMED</span>
+            <div id="char-name" class="result-name">DAVID</div>
+            <p id="char-desc" class="result-desc"></p>
+        </div>
+
+        <div class="warning-footer">
+            CAUTION: CYBERPSYCHOSIS RISK DETECTED IN SELECTED PARAMETERS
+        </div>
+    </div>
+</div>
+
+<script>
+    function checkMatch() {
+        // Načtení hodnot
+        const fixer = document.getElementById('fixer').value;
+        const loc = document.getElementById('location').value;
+        const os = document.getElementById('os').value;
+        const weapon = document.getElementById('weapon').value;
+        const style = document.getElementById('style').value;
+        const trauma = document.getElementById('trauma').value;
+
+        const resultDiv = document.getElementById('result');
+        const nameDiv = document.getElementById('char-name');
+        const descDiv = document.getElementById('char-desc');
+
+        // Kontrola, zda je vybráno dostatek polí (např. OS a Styl)
+        if (os && style && weapon) {
+            resultDiv.style.display = 'block';
+
+            // Logika pro postavy z Edgerunners
+            if (os === 'sandy' && style === 'blitz') {
+                nameDiv.innerText = "DAVID MARTINEZ";
+                descDiv.innerText = "Main character of the crew. Wearing his mother's jacket and pushing the Sandevistan to the limit. A legend of Night City who went all the way to the top.";
+            } 
+            else if (os === 'deck' || style === 'hacker') {
+                nameDiv.innerText = "LUCY";
+                descDiv.innerText = "An exceptional netrunner with a mysterious past. She dreams of going to the Moon to escape the gravity of Night City. Lethal with a monowire.";
+            }
+            else if (weapon === 'shotgun' || (style === 'blitz' && weapon === 'pistol')) {
+                nameDiv.innerText = "REBECCA";
+                descDiv.innerText = "Short, loud, and packing massive firepower. The most loyal solo in the crew. She doesn't care about the odds, as long as there's a fight.";
+            }
+            else if (style === 'tank' || weapon === 'lmg') {
+                nameDiv.innerText = "MAINE";
+                descDiv.innerText = "The leader. Built like a chrome mountain. He took David under his wing and showed him what it means to be an Edgerunner.";
+            }
+            else if (style === 'hacker' && os === 'deck') {
+                nameDiv.innerText = "KIWI";
+                descDiv.innerText = "The mentor netrunner. Cool-headed and professional, she taught Lucy everything, but in Night City, trust is a rare luxury.";
+            }
+            else {
+                nameDiv.innerText = "FALCO";
+                descDiv.innerText = "The best getaway driver in the business. Always calm under fire, keeping the crew together when everything falls apart.";
+            }
+        } else {
+            resultDiv.style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
